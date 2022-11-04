@@ -2,6 +2,8 @@
 # https://github.com/chipkin/BACnetServerExamplePython 
 #
 import ctypes
+import io
+
 import pathlib
 import netifaces
 import dns.resolver  # Package name: dnspython
@@ -150,6 +152,12 @@ def CallbackReceiveMessage(message, maxMessageLength, receivedConnectionString, 
     except socket.timeout:
         # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
         return 0
+    except io.BlockingIOError:
+        # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
+        return 0
+    except socket.error:
+        # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
+        return 0
 
     # Catch all
     return 0
@@ -252,6 +260,7 @@ def CallbackGetPropertyCharString(deviceInstance, objectType, objectInstance, pr
                 # Define how long the Object name is
                 valueElementCount[0] = len(b_objectName)
                 return True
+
             elif objectType == bacnet_objectType["networkPort"] and objectInstance == db["networkPort"]["instance"]:
                 objectName = db["networkPort"]["objectName"]
                 # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
