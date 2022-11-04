@@ -217,9 +217,10 @@ def CallbackGetPropertyCharString(deviceInstance, objectType, objectInstance, pr
                                   valueElementCount, maxElementCount,
                                   encodingType, useArrayIndex, propertyArrayIndex):
     print(
-    "CallbackGetPropertyCharString", deviceInstance, objectType, objectInstance, propertyIdentifier, maxElementCount,
-    useArrayIndex,
-    propertyArrayIndex)
+        "CallbackGetPropertyCharString", deviceInstance, objectType, objectInstance, propertyIdentifier,
+        maxElementCount,
+        useArrayIndex,
+        propertyArrayIndex)
 
     if deviceInstance == db["device"]["instance"]:
         if propertyIdentifier == bacnet_propertyIdentifier["vendorname"] and objectType == bacnet_objectType["device"]:
@@ -260,7 +261,101 @@ def CallbackGetPropertyCharString(deviceInstance, objectType, objectInstance, pr
                 # Define how long the Object name is
                 valueElementCount[0] = len(b_objectName)
                 return True
-
+            elif objectType == bacnet_objectType["analogOutput"] and objectInstance == db["analogOutput"]["instance"]:
+                objectName = db["analogOutput"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["analogValue"] and objectInstance == db["analogValue"]["instance"]:
+                objectName = db["analogValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["binaryOutput"] and objectInstance == db["binaryOutput"]["instance"]:
+                objectName = db["binaryOutput"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
+                objectName = db["binaryValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["multiStateOutput"] and objectInstance == db["multiStateOutput"][
+                "instance"]:
+                objectName = db["multiStateOutput"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["multiStateValue"] and objectInstance == db["multiStateValue"][
+                "instance"]:
+                objectName = db["multiStateValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["characterstringValue"] \
+                    and objectInstance == db["characterstringValue"]["instance"]:
+                objectName = db["characterstringValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["intergerValue"] and objectInstance == db["intergerValue"]["instance"]:
+                objectName = db["intergerValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["largeAnalogValue"] \
+                    and objectInstance == db["largeAnalogValue"]["instance"]:
+                objectName = db["largeAnalogValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["positiveIntegerValue"] \
+                    and objectInstance == db["positiveIntegerValue"]["instance"]:
+                objectName = db["positiveIntegerValue"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
             elif objectType == bacnet_objectType["networkPort"] and objectInstance == db["networkPort"]["instance"]:
                 objectName = db["networkPort"]["objectName"]
                 # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
@@ -286,7 +381,8 @@ def ValueToKey(enumeration, searchValue):
 def CallbackGetPropertyEnumerated(deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
                                   propertyArrayIndex):
     print(
-    "CallbackGetPropertyEnumerated", deviceInstance, objectType, objectInstance, propertyIdentifier, propertyArrayIndex)
+        "CallbackGetPropertyEnumerated", deviceInstance, objectType, objectInstance, propertyIdentifier,
+        propertyArrayIndex)
 
     if deviceInstance == db["device"]["instance"]:
         if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
@@ -320,9 +416,9 @@ def CallbackGetPropertyBitString(deviceInstance, objectType, objectInstance, pro
                                  valueElementCount, maxElementCount,
                                  useArrayIndex, propertyArrayIndex):
     print(
-    "CallbackGetPropertyBitString", deviceInstance, objectType, objectInstance, propertyIdentifier, maxElementCount,
-    useArrayIndex,
-    propertyArrayIndex)
+        "CallbackGetPropertyBitString", deviceInstance, objectType, objectInstance, propertyIdentifier, maxElementCount,
+        useArrayIndex,
+        propertyArrayIndex)
     return False
 
 
@@ -439,9 +535,9 @@ def CallbackSetPropertyUInt(deviceInstance, objectType, objectInstance, property
                             propertyArrayIndex, priority,
                             errorCode):
     print(
-    "CallbackSetPropertyUInt", deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
-    propertyArrayIndex,
-    priority, errorCode)
+        "CallbackSetPropertyUInt", deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
+        propertyArrayIndex,
+        priority, errorCode)
     if deviceInstance == db["device"]["instance"]:
         if propertyIdentifier == bacnet_propertyIdentifier["fdbbmdaddress"]:
             if objectType == bacnet_objectType["networkPort"] and objectInstance == db["networkPort"]["instance"]:
@@ -461,9 +557,9 @@ def CallbackSetPropertyOctetString(deviceInstance, objectType, objectInstance, p
                                    useArrayIndex, propertyArray,
                                    priority, errorCode):
     print(
-    "CallbackSetPropertyOctetString", deviceInstance, objectType, objectInstance, propertyIdentifier, value, length,
-    useArrayIndex,
-    propertyArray, priority, errorCode)
+        "CallbackSetPropertyOctetString", deviceInstance, objectType, objectInstance, propertyIdentifier, value, length,
+        useArrayIndex,
+        propertyArray, priority, errorCode)
     if deviceInstance == db["device"]["instance"]:
         if propertyIdentifier == bacnet_propertyIdentifier["fdbbmdaddress"]:
             if objectType == bacnet_objectType["networkPort"] and objectInstance == db["networkPort"]["instance"]:
@@ -481,7 +577,7 @@ def CallbackReinitializeDevice(deviceInstance, reinitializedState, password, pas
     derefedPassword = rebuildString(password, passwordLength)
 
     print(
-    "CallbackReinitializeDevice", deviceInstance, reinitializedState, derefedPassword, passwordLength, errorCode[0])
+        "CallbackReinitializeDevice", deviceInstance, reinitializedState, derefedPassword, passwordLength, errorCode[0])
 
     # This callback is called when this BACnet Server device receives a ReinitializeDevice message
     # In this callback, you will handle the reinitializedState
@@ -594,6 +690,7 @@ if __name__ == "__main__":
     udpSocket.setblocking(False)
 
     # Load network information into database
+
     db["networkPort"]["ipAddress"] = [int(octet) for octet in
                                       netifaces.ifaddresses(netifaces.interfaces()[0])[netifaces.AF_INET][0][
                                           "addr"].split(".")]
