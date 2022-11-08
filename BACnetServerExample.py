@@ -23,6 +23,83 @@ from CASBACnetStackAdapter import *  # Contains all the Enumerations, and callba
 # no-fault-detected (0),or (1)
 # ...
 
+# db = {
+#     "device": {
+#         "instance": 389001,
+#         "objectName": "Device Rainbow",
+#         "vendorname": "Example Chipkin Automation Systems",
+#         "vendoridentifier": 0},
+#     "analogInput": {
+#         "instance": 0,
+#         "objectName": "AnalogInput Bronze",
+#         "presentValue": 99.6,
+#         "units": 62,
+#         "reliability": 1},
+#     "binaryInput": {
+#         "instance": 3,
+#         "objectName": "BinaryInput Emerald",
+#         "presentValue": 1,
+#         "reliability": 1},
+#     "multiStateInput": {
+#         "instance": 13,
+#         "objectName": "MultiStateInput Hot Pink",
+#         "presentValue": 3},
+#     "analogOutput": {
+#         "instance": 1,
+#         "objectName": "AnalogOutput Chartreuse",
+#         "presentValue": 1},
+#     "analogValue": {
+#         "instance": 2,
+#         "objectName": "AnalogValue Diamond",
+#         "presentValue": 1},
+#     "binaryOutput": {
+#         "instance": 4,
+#         "objectName": "BinaryOutput Fuchsia",
+#         "presentValue": 1},
+#     "binaryValue": {
+#         "instance": 5,
+#         "objectName": "BinaryValue Gold",
+#         "presentValue": 1},
+#     "multiStateOutput": {
+#         "instance": 14,
+#         "objectName": "MultiStateOutput Indigo",
+#         "presentValue": 1},
+#     "multiStateValue": {
+#         "instance": 15,
+#         "objectName": "MultiStateValue Kiwi",
+#         "presentValue": 1},
+#     "characterstringValue": {
+#         "instance": 40,
+#         "objectName": "CharacterstringValue Nickel",
+#         "presentValue": 1},
+#     "integerValue": {
+#         "instance": 45,
+#         "objectName": "IntegerValue Purple",
+#         "presentValue": 1},
+#     "largeAnalogValue": {
+#         "instance": 46,
+#         "objectName": "LargeAnalogValue Quartz",
+#         "presentValue": 1},
+#     "positiveIntegerValue": {
+#         "instance": 48,
+#         "objectName": "PositiveIntegerValue Silver",
+#         "presentValue": 1},
+#     "networkPort": {
+#         "instance": 50,
+#         "objectName": "NetworkPort Vermillion",
+#         "BACnetIPUDPPort": 47808,
+#         "ipLength": 4,
+#         "ipAddress": [0, 0, 0, 0],
+#         "ipDefaultGateway": [0, 0, 0, 0],
+#         "ipDnsServer": [0, 0, 0, 0],
+#         "ipNumOfDns": 0,
+#         "ipSubnetMask": [0, 0, 0, 0],
+#         "FdBbmdAddressHostIp": [192, 168, 1, 4],
+#         "FdBbmdAddressHostType": 1,  # 0 = None, 1 = IpAddress, 2 = Name
+#         "FdBbmdAddressPort": 47808,
+#         "FdSubscriptionLifetime": 3000,
+#         "changesPending": False}
+# }
 db = {
     "device": {
         "instance": 389001,
@@ -34,7 +111,8 @@ db = {
         "objectName": "AnalogInput Bronze",
         "presentValue": 99.6,
         "units": 62,
-        "reliability": 1},
+        "reliability": 1,
+        "covIncrement": 5.0},
     "binaryInput": {
         "instance": 3,
         "objectName": "BinaryInput Emerald",
@@ -51,7 +129,8 @@ db = {
     "analogValue": {
         "instance": 2,
         "objectName": "AnalogValue Diamond",
-        "presentValue": 1},
+        "presentValue": 1,
+        "covIncrement": 1.0},
     "binaryOutput": {
         "instance": 4,
         "objectName": "BinaryOutput Fuchsia",
@@ -59,15 +138,18 @@ db = {
     "binaryValue": {
         "instance": 5,
         "objectName": "BinaryValue Gold",
-        "presentValue": 1},
+        "presentValue": 1,
+        "numberOfStates": 3},
     "multiStateOutput": {
         "instance": 14,
         "objectName": "MultiStateOutput Indigo",
-        "presentValue": 1},
+        "presentValue": 1,
+        "numberOfStates": 4},
     "multiStateValue": {
         "instance": 15,
         "objectName": "MultiStateValue Kiwi",
-        "presentValue": 1},
+        "presentValue": 1,
+        "numberOfStates": 3},
     "characterstringValue": {
         "instance": 40,
         "objectName": "CharacterstringValue Nickel",
@@ -210,6 +292,13 @@ def CallbackGetPropertyReal(deviceInstance, objectType, objectInstance, property
                 return True
             if objectType == bacnet_objectType["analogValue"] and objectInstance == db["analogValue"]["instance"]:
                 value[0] = ctypes.c_float(db["analogValue"]["presentValue"])
+                return True
+        if propertyIdentifier == bacnet_propertyIdentifier["covIncrement"]:
+            if objectType == bacnet_objectType["analogInput"] and objectInstance == db["analogInput"]["instance"]:
+                value[0] = ctypes.c_float(db["analogInput"]["covIncrement"])
+                return True
+            if objectType == bacnet_objectType["analogValue"] and objectInstance == db["analogValue"]["instance"]:
+                value[0] = ctypes.c_float(db["analogValue"]["covIncrement"])
                 return True
 
     # Return false. The CAS BACnet Stack will use a default value.
@@ -436,6 +525,17 @@ def CallbackGetPropertyUInt(deviceInstance, objectType, objectInstance, property
                     db["positiveIntegerValue"]["instance"]:
                 value[0] = ctypes.c_uint32(db["positiveIntegerValue"]["presentValue"])
                 return True
+        if propertyIdentifier == bacnet_propertyIdentifier["numberOfStates"]:
+            if objectType == bacnet_objectType["multiStateInput"] and objectInstance == db["multiStateInput"]["instance"]:
+                value[0] = ctypes.c_uint32(db["multiStateInput"]["numberOfStates"])
+                return True
+            elif objectType == bacnet_objectType["multiStateOutput"] and objectInstance == db["multiStateOutput"]["instance"]:
+                value[0] = ctypes.c_uint32(db["multiStateOutput"]["numberOfStates"])
+                return True
+            elif objectType == bacnet_objectType["multiStateValue"] and objectInstance == \
+                    db["multiStateValue"]["instance"]:
+                value[0] = ctypes.c_uint32(db["multiStateValue"]["numberOfStates"])
+                return True
 
 
 def CallbackGetPropertyBitString(deviceInstance, objectType, objectInstance, propertyIdentifier, value,
@@ -475,7 +575,8 @@ def CallbackGetPropertyDouble(deviceInstance, objectType, objectInstance, proper
 
     if deviceInstance == db["device"]["instance"]:
         if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
-            if objectType == bacnet_objectType["largeAnalogValue"] and objectInstance == db["largeAnalogValue"]["instance"]:
+            if objectType == bacnet_objectType["largeAnalogValue"] and objectInstance == db["largeAnalogValue"][
+                "instance"]:
                 value[0] = ctypes.c_double(db["largeAnalogValue"]["presentValue"])
                 return True
 
