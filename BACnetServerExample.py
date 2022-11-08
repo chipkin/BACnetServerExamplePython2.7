@@ -208,6 +208,9 @@ def CallbackGetPropertyReal(deviceInstance, objectType, objectInstance, property
             if objectType == bacnet_objectType["analogInput"] and objectInstance == db["analogInput"]["instance"]:
                 value[0] = ctypes.c_float(db["analogInput"]["presentValue"])
                 return True
+            if objectType == bacnet_objectType["analogValue"] and objectInstance == db["analogValue"]["instance"]:
+                value[0] = ctypes.c_float(db["analogValue"]["presentValue"])
+                return True
 
     # Return false. The CAS BACnet Stack will use a default value.
     return False
@@ -399,6 +402,10 @@ def CallbackGetPropertyEnumerated(deviceInstance, objectType, objectInstance, pr
                 if "units" in db[ValueToKey(bacnet_objectType, objectType)]:
                     value[0] = ctypes.c_uint32(db[ValueToKey(bacnet_objectType, objectType)]["reliability"])
                     return True
+        elif propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
+                value[0] = ctypes.c_uint32(db["binaryValue"]["presentValue"])
+                return True
 
             # Undefined reliability. Assume no-fault-detected (0)
             value[0] = ctypes.c_uint32(0)
@@ -410,6 +417,25 @@ def CallbackGetPropertyEnumerated(deviceInstance, objectType, objectInstance, pr
 
     # Return false. The CAS BACnet Stack will use a default value.
     return False
+
+
+def CallbackGetPropertyUInt(deviceInstance, objectType, objectInstance, propertyIdentifier, value,
+                            propertyArrayIndex):
+    print("CallbackGetPropertyUInt", deviceInstance, objectType, objectInstance, propertyIdentifier, propertyArrayIndex)
+    if deviceInstance == db["device"]["instance"]:
+        if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["multiStateInput"] and objectInstance == db["multiStateInput"][
+                "instance"]:
+                value[0] = ctypes.c_uint32(db["multiStateInput"]["presentValue"])
+                return True
+            elif objectType == bacnet_objectType["multistateValue"] and objectInstance == db["multiStateValue"][
+                "instance"]:
+                value[0] = ctypes.c_uint32(db["multiStateValue"]["presentValue"])
+                return True
+            elif objectType == bacnet_objectType["positiveIntegerValue"] and objectInstance == \
+                    db["positiveIntegerValue"]["instance"]:
+                value[0] = ctypes.c_uint32(db["positiveIntegerValue"]["presentValue"])
+                return True
 
 
 def CallbackGetPropertyBitString(deviceInstance, objectType, objectInstance, propertyIdentifier, value,
@@ -446,6 +472,13 @@ def CallbackGetPropertyDouble(deviceInstance, objectType, objectInstance, proper
                               propertyArrayIndex):
     print("CallbackGetPropertyDouble", deviceInstance, objectType, objectInstance, propertyIdentifier, useArrayIndex,
           propertyArrayIndex)
+
+    if deviceInstance == db["device"]["instance"]:
+        if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["largeAnalogValue"] and objectInstance == db["largeAnalogValue"]["instance"]:
+                value[0] = ctypes.c_double(db["largeAnalogValue"]["presentValue"])
+                return True
+
     return False
 
 
@@ -489,6 +522,13 @@ def CallbackGetPropertyInt(deviceInstance, objectType, objectInstance, propertyI
                            propertyArrayIndex):
     print("CallbackGetPropertyInt", deviceInstance, objectType, objectInstance, propertyIdentifier, useArrayIndex,
           propertyArrayIndex)
+
+    if deviceInstance == db["device"]["instance"]:
+        if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["integerValue"] and objectInstance == db["integerValue"]["instance"]:
+                value[0] = ctypes.c_int32(db["integerValue"]["presentValue"])
+                return True
+
     return False
 
 
