@@ -1,5 +1,5 @@
 # BACnet Server Example Python 2.7
-A basic BACnet IP server example written with Python 3.7 using the [CAS BACnet Stack](https://www.bacnetstack.com/)
+A basic BACnet IP server example written with Python 2.7 using the [CAS BACnet Stack](https://www.bacnetstack.com/)
 
 - Device: 389001 (Device Rainbow)
   - analog_input: 0 (AnalogInput Bronze)
