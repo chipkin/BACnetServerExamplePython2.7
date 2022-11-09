@@ -138,14 +138,14 @@ def CallbackReceiveMessage(message, maxMessageLength, receivedConnectionString, 
 
         # Convert the received address to the CAS BACnet Stack connection string format.
         ip_as_bytes = bytes(map(int, addr[0].split(".")))
-        for i in range(len(ip_as_bytes)):
-            print(str(ip_as_bytes[i]))
-            receivedConnectionString[i] = ip_as_bytes[i]
+        for item in ip_as_bytes:
+            print (item)
+            receivedConnectionString.append(item)
         # UDP Port
-        receivedConnectionString[4] = int(addr[1] / 256)
-        receivedConnectionString[5] = addr[1] % 256
+        receivedConnectionString.append(int(addr[1] / 256))
+        receivedConnectionString.append(addr[1] % 256)
         # New ConnectionString Length
-        receivedConnectionStringLength[0] = 6
+        receivedConnectionStringLength.insert(0, 6)
 
         # Convert the received data to a format that CAS BACnet Stack can process.
         for i in range(len(data)):
