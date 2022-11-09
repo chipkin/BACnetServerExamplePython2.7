@@ -22,84 +22,6 @@ from CASBACnetStackAdapter import *  # Contains all the Enumerations, and callba
 # Reliability
 # no-fault-detected (0),or (1)
 # ...
-
-# db = {
-#     "device": {
-#         "instance": 389001,
-#         "objectName": "Device Rainbow",
-#         "vendorname": "Example Chipkin Automation Systems",
-#         "vendoridentifier": 0},
-#     "analogInput": {
-#         "instance": 0,
-#         "objectName": "AnalogInput Bronze",
-#         "presentValue": 99.6,
-#         "units": 62,
-#         "reliability": 1},
-#     "binaryInput": {
-#         "instance": 3,
-#         "objectName": "BinaryInput Emerald",
-#         "presentValue": 1,
-#         "reliability": 1},
-#     "multiStateInput": {
-#         "instance": 13,
-#         "objectName": "MultiStateInput Hot Pink",
-#         "presentValue": 3},
-#     "analogOutput": {
-#         "instance": 1,
-#         "objectName": "AnalogOutput Chartreuse",
-#         "presentValue": 1},
-#     "analogValue": {
-#         "instance": 2,
-#         "objectName": "AnalogValue Diamond",
-#         "presentValue": 1},
-#     "binaryOutput": {
-#         "instance": 4,
-#         "objectName": "BinaryOutput Fuchsia",
-#         "presentValue": 1},
-#     "binaryValue": {
-#         "instance": 5,
-#         "objectName": "BinaryValue Gold",
-#         "presentValue": 1},
-#     "multiStateOutput": {
-#         "instance": 14,
-#         "objectName": "MultiStateOutput Indigo",
-#         "presentValue": 1},
-#     "multiStateValue": {
-#         "instance": 15,
-#         "objectName": "MultiStateValue Kiwi",
-#         "presentValue": 1},
-#     "characterstringValue": {
-#         "instance": 40,
-#         "objectName": "CharacterstringValue Nickel",
-#         "presentValue": 1},
-#     "integerValue": {
-#         "instance": 45,
-#         "objectName": "IntegerValue Purple",
-#         "presentValue": 1},
-#     "largeAnalogValue": {
-#         "instance": 46,
-#         "objectName": "LargeAnalogValue Quartz",
-#         "presentValue": 1},
-#     "positiveIntegerValue": {
-#         "instance": 48,
-#         "objectName": "PositiveIntegerValue Silver",
-#         "presentValue": 1},
-#     "networkPort": {
-#         "instance": 50,
-#         "objectName": "NetworkPort Vermillion",
-#         "BACnetIPUDPPort": 47808,
-#         "ipLength": 4,
-#         "ipAddress": [0, 0, 0, 0],
-#         "ipDefaultGateway": [0, 0, 0, 0],
-#         "ipDnsServer": [0, 0, 0, 0],
-#         "ipNumOfDns": 0,
-#         "ipSubnetMask": [0, 0, 0, 0],
-#         "FdBbmdAddressHostIp": [192, 168, 1, 4],
-#         "FdBbmdAddressHostType": 1,  # 0 = None, 1 = IpAddress, 2 = Name
-#         "FdBbmdAddressPort": 47808,
-#         "FdSubscriptionLifetime": 3000,
-#         "changesPending": False}
-# }
 db = {
     "device": {
         "instance": 389001,
@@ -217,6 +139,7 @@ def CallbackReceiveMessage(message, maxMessageLength, receivedConnectionString, 
         # Convert the received address to the CAS BACnet Stack connection string format.
         ip_as_bytes = bytes(map(int, addr[0].split(".")))
         for i in range(len(ip_as_bytes)):
+            print(str(ip_as_bytes[i]))
             receivedConnectionString[i] = ip_as_bytes[i]
         # UDP Port
         receivedConnectionString[4] = int(addr[1] / 256)
@@ -259,12 +182,12 @@ def CallbackSendMessage(message, messageLength, connectionString, connectionStri
         print("DEBUG:   ToDo: Broadcast this message. Local IP: ", db["networkPort"]["ipAddress"], "Subnet: ",
               db["networkPort"]["ipSubnetMask"],
               "Broadcast IP: ????")
-        ipAddress = connectionString[0] + "." + connectionString[1] + "." + connectionString[2] + "." + \
-                    connectionString[3]
+        ipAddress = str(connectionString[0]) + "." + str(connectionString[1]) + "." + str(connectionString[2]) + "." + \
+                    str(connectionString[3])
 
     else:
-        ipAddress = connectionString[0] + "." + connectionString[1] + "." + connectionString[2] + "." + \
-                    connectionString[3]
+        ipAddress = str(connectionString[0]) + "." + str(connectionString[1]) + "." + str(connectionString[2]) + "." + \
+                    str(connectionString[3])
 
     # Extract the message from CAS BACnet Stack to a bytearray
     data = bytearray(messageLength)
@@ -1191,13 +1114,13 @@ if __name__ == "__main__":
         time.sleep(0.1)
 
         # Every x seconds increment the AnalogInput presentValue property by 0.1
-        if lastTimeValueWasUpdated + 1 < time.time():
-            lastTimeValueWasUpdated = time.time()
-            db["analogInput"]["presentValue"] += 0.1
-            # Notify the stack that this data point was updated so the stack can check for logic
-            # 		that may need to run on the data.  Example: check if COV (change of value) occurred.
-            if CASBACnetStack.BACnetStack_ValueUpdated is not None:
-                CASBACnetStack.BACnetStack_ValueUpdated(db["device"]["instance"], bacnet_objectType["analogValue"],
-                                                        db["analogValue"]["instance"],
-                                                        bacnet_propertyIdentifier["presentValue"])
-            print("FYI: Updating AnalogInput (0) PresentValue: ", round(db["analogInput"]["presentValue"], 1))
+        # if lastTimeValueWasUpdated + 1 < time.time():
+        #     lastTimeValueWasUpdated = time.time()
+        #     db["analogInput"]["presentValue"] += 0.1
+        #     # Notify the stack that this data point was updated so the stack can check for logic
+        #     # 		that may need to run on the data.  Example: check if COV (change of value) occurred.
+        #     if CASBACnetStack.BACnetStack_ValueUpdated is not None:
+        #         CASBACnetStack.BACnetStack_ValueUpdated(db["device"]["instance"], bacnet_objectType["analogValue"],
+        #                                                 db["analogValue"]["instance"],
+        #                                                 bacnet_propertyIdentifier["presentValue"])
+        #     print("FYI: Updating AnalogInput (0) PresentValue: ", round(db["analogInput"]["presentValue"], 1))
