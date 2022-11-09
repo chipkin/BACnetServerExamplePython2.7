@@ -987,6 +987,7 @@ if __name__ == "__main__":
 
     # Add Objects
     # ---------------------------------------
+
     # AnalogInput (AI)
     print("FYI: Adding AnalogInput. AnalogInput.instance=[" + str(db['analogInput']['instance']) + "]")
     if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["analogInput"],
@@ -1000,41 +1001,21 @@ if __name__ == "__main__":
                                                   bacnet_propertyIdentifier["reliability"], True)
 
     #Make analogInput subscribable
-    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["analogInput"],
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["analogInput"],
                                                     db["analogInput"]["instance"],
                                                     bacnet_propertyIdentifier["presentValue"], True)
 
-    #Make analogValue subscribable
-    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["analogValue"],
-                                                    db["analogValue"]["instance"],
-                                                    bacnet_propertyIdentifier["presentValue"], True)
-    #Make binaryValue subscribable
-    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["binaryValue"],
-                                                    db["binaryValue"]["instance"],
-                                                    bacnet_propertyIdentifier["presentValue"], True)
-    #Make multiStateInput subscribable
-    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["multiStateInput"],
-                                                    db["multiStateInput"]["instance"],
-                                                    bacnet_propertyIdentifier["presentValue"], True)
-    #Make multiStateValue subscribable
-    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["multiStateValue"],
-                                                    db["multiStateValue"]["instance"],
-                                                    bacnet_propertyIdentifier["presentValue"], True)
-
-
-
-
-    # AnalogValue (AV)
-    print("FYI: Adding AnalogValue. AnalogValue.instance=[" + str(db['analogValue']['instance']) + "]")
-    if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["analogValue"],
-                                                db["analogValue"]["instance"]):
-        print("Error: Failed to add analogValue")
+    # BinaryInput (BI)
+    print("FYI: Adding BinaryInput. BinaryInput.instance=[" + str(db['binaryInput']['instance']) + "]")
+    if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["binaryInput"],
+                                                db["binaryInput"]["instance"]):
+        print("Error: Failed to add binaryInput")
         exit()
 
-    # Enable optional properties
-    CASBACnetStack.BACnetStack_SetPropertyEnabled(db["device"]["instance"], bacnet_objectType["analogValue"],
-                                                  db["analogValue"]["instance"],
-                                                  bacnet_propertyIdentifier["reliability"], True)
+    #Make binaryInput subscribable
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["binaryInput"],
+                                                    db["binaryInput"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
 
     # MultiStateInput (MSI)
     print("FYI: Adding MultiStateInput. MultiStateInput.instance=[" + str(db['multiStateInput']['instance']) + "]")
@@ -1042,6 +1023,11 @@ if __name__ == "__main__":
                                                 db["multiStateInput"]["instance"]):
         print("Error: Failed to add MultiStateInput")
         exit()
+
+    # Make multiStateInput subscribable
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["multiStateInput"],
+                                                    db["multiStateInput"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
 
     # analogOutput
     print("FYI: Adding analogOutput. analogOutput.instance=[" + str(db['analogOutput']['instance']) + "]")
@@ -1057,6 +1043,22 @@ if __name__ == "__main__":
         print("Error: Failed to add analogValue")
         exit()
 
+    # Enable optional properties
+    CASBACnetStack.BACnetStack_SetPropertyEnabled(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                  db["analogValue"]["instance"],
+                                                  bacnet_propertyIdentifier["reliability"], True)
+    # Make analogValue PresentValue Writable
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["analogValue"],
+            db["analogValue"]["instance"],
+
+            bacnet_propertyIdentifier["presentValue"], True):
+        print("Error: Failed to set analogValue.presentValue to writable")
+   
+    # Make analogValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                    db["analogValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+
     # binaryOutput
     print("FYI: Adding binaryOutput. binaryOutput.instance=[" + str(db['binaryOutput']['instance']) + "]")
     if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["binaryOutput"],
@@ -1071,6 +1073,17 @@ if __name__ == "__main__":
         print("Error: Failed to add binaryValue")
         exit()
 
+    # Make binaryValue PresentValue Writable
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["binaryValue"],
+                                                          db["binaryValue"]["instance"],
+                                                          bacnet_propertyIdentifier["presentValue"], True):
+        print("Error: Failed to set binaryValue.presentValue to writable")
+
+    # Make binaryValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["binaryValue"],
+                                                    db["binaryValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)   
+
     # multiStateOutput
     print("FYI: Adding multiStateOutput. multiStateOutput.instance=[" + str(db['multiStateOutput']['instance']) + "]")
     if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["multiStateOutput"],
@@ -1084,6 +1097,18 @@ if __name__ == "__main__":
                                                 db["multiStateValue"]["instance"]):
         print("Error: Failed to add multiStateValue")
         exit()
+
+    # Make  multiStateValue PresentValue Writable
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"],
+                                                          bacnet_objectType["multiStateValue"],
+                                                          db["multiStateValue"]["instance"],
+                                                          bacnet_propertyIdentifier["presentValue"], True):
+        print ("Error: Failed to set multiStateValue.presentValue to writable")
+
+    # Make multiStateValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertySubscribable(db["device"]["instance"], bacnet_objectType["multiStateValue"],
+                                                    db["multiStateValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)    
 
     # characterstringValue
     print("FYI: Adding characterstringValue. characterstringValue.instance=[" + str(
@@ -1139,20 +1164,6 @@ if __name__ == "__main__":
                                                           db["networkPort"]["instance"],
                                                           bacnet_propertyIdentifier["fdsubscriptionlifetime"], True):
         print("Error: Failed to set fdSubscriptionLifetime to writable")
-    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["analogValue"],
-                                                          db["analogValue"]["instance"],
-
-                                                          bacnet_propertyIdentifier["presentValue"], True):
-        print("Error: Failed to set analogValue.presentValue to writable")
-    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"],
-                                                          bacnet_objectType["multiStateValue"],
-                                                          db["multiStateValue"]["instance"],
-                                                          bacnet_propertyIdentifier["presentValue"], True):
-        print ("Error: Failed to set multiStateValue.presentValue to writable")
-    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["binaryValue"],
-                                                          db["binaryValue"]["instance"],
-                                                          bacnet_propertyIdentifier["presentValue"], True):
-        print("Error: Failed to set binaryValue.presentValue to writable")
 
     # 5. Send I-Am of this device
     # ---------------------------------------------------------------------------
