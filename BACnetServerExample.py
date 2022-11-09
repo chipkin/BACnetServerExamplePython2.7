@@ -481,6 +481,9 @@ def CallbackGetPropertyEnumerated(deviceInstance, objectType, objectInstance, pr
             if objectType == bacnet_objectType["binaryInput"] and objectInstance == db["binaryInput"]["instance"]:
                 value[0] = ctypes.c_uint32(db["binaryInput"]["presentValue"])
                 return True
+            elif objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
+                value[0] = ctypes.c_uint32(db["binaryValue"]["presentValue"])
+                return True
         elif propertyIdentifier == bacnet_propertyIdentifier["units"]:
             if ValueToKey(bacnet_objectType, objectType) in db:
                 if "units" in db[ValueToKey(bacnet_objectType, objectType)]:
@@ -491,10 +494,6 @@ def CallbackGetPropertyEnumerated(deviceInstance, objectType, objectInstance, pr
                 if "units" in db[ValueToKey(bacnet_objectType, objectType)]:
                     value[0] = ctypes.c_uint32(db[ValueToKey(bacnet_objectType, objectType)]["reliability"])
                     return True
-        elif propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
-            if objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
-                value[0] = ctypes.c_uint32(db["binaryValue"]["presentValue"])
-                return True
 
             # Undefined reliability. Assume no-fault-detected (0)
             value[0] = ctypes.c_uint32(0)
@@ -526,10 +525,12 @@ def CallbackGetPropertyUInt(deviceInstance, objectType, objectInstance, property
                 value[0] = ctypes.c_uint32(db["positiveIntegerValue"]["presentValue"])
                 return True
         if propertyIdentifier == bacnet_propertyIdentifier["numberOfStates"]:
-            if objectType == bacnet_objectType["multiStateInput"] and objectInstance == db["multiStateInput"]["instance"]:
+            if objectType == bacnet_objectType["multiStateInput"] and objectInstance == db["multiStateInput"][
+                "instance"]:
                 value[0] = ctypes.c_uint32(db["multiStateInput"]["numberOfStates"])
                 return True
-            elif objectType == bacnet_objectType["multiStateOutput"] and objectInstance == db["multiStateOutput"]["instance"]:
+            elif objectType == bacnet_objectType["multiStateOutput"] and objectInstance == db["multiStateOutput"][
+                "instance"]:
                 value[0] = ctypes.c_uint32(db["multiStateOutput"]["numberOfStates"])
                 return True
             elif objectType == bacnet_objectType["multiStateValue"] and objectInstance == \
@@ -690,6 +691,63 @@ def CallbackSetPropertyUInt(deviceInstance, objectType, objectInstance, property
             if objectType == bacnet_objectType["networkPort"] and objectInstance == db["networkPort"]["instance"]:
                 db["networkPort"]["FdSubscriptionLifetime"] = value
                 db["networkPort"]["changesPending"] = True
+                return True
+        elif propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["multiStateInput"] and objectInstance == db["multiStateInput"][
+                "instance"]:
+                db["multiStateInput"]["presentValue"] = value
+                db["multiStateInput"]["changesPending"] = True
+                return True
+            if objectType == bacnet_objectType["multistateValue"] and objectInstance == db["multistateValue"][
+                "instance"]:
+                db["multistateValue"]["presentValue"] = value
+                db["multistateValue"]["changesPending"] = True
+                return True
+            if objectType == bacnet_objectType["positiveIntegerValue"] and objectInstance == db["positiveIntegerValue"][
+                "instance"]:
+                db["positiveIntegerValue"]["presentValue"] = value
+                db["positiveIntegerValue"]["changesPending"] = True
+                return True
+    return False
+
+
+def CallbackSetPropertyReal(deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
+                            propertyArrayIndex, priority,
+                            errorCode):
+    print(
+        "CallbackSetPropertyReal", deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
+        propertyArrayIndex,
+        priority, errorCode)
+    if deviceInstance == db["device"]["instance"]:
+        if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["analogInput"] and objectInstance == db["analogInput"]["instance"]:
+                db["analogInput"]["presentValue"] = value
+                db["analogInput"]["changesPending"] = True
+                return True
+            if objectType == bacnet_objectType["analogValue"] and objectInstance == db["analogValue"]["instance"]:
+                db["analogValue"]["presentValue"] = value
+                db["analogValue"]["changesPending"] = True
+                return True
+    return False
+
+
+def CallbackSetPropertyEnumerated(deviceInstance, objectType, objectInstance, propertyIdentifier, value, useArrayIndex,
+                                  propertyArrayIndex, priority,
+                                  errorCode):
+    print(
+        "CallbackSetPropertyEnumerated", deviceInstance, objectType, objectInstance, propertyIdentifier, value,
+        useArrayIndex,
+        propertyArrayIndex,
+        priority, errorCode)
+    if deviceInstance == db["device"]["instance"]:
+        if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
+            if objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
+                db["binaryValue"]["presentValue"] = value
+                db["binaryValue"]["changesPending"] = True
+                return True
+            elif objectType == bacnet_objectType["binaryInput"] and objectInstance == db["binaryInput"]["instance"]:
+                db["binaryInput"]["presentValue"] = value
+                db["binaryInput"]["changesPending"] = True
                 return True
     return False
 
@@ -887,6 +945,9 @@ if __name__ == "__main__":
     pyCallbackGetPropertyUInt = fpCallbackGetPropertyUInt(CallbackGetPropertyUInt)
     CASBACnetStack.BACnetStack_RegisterCallbackGetPropertyUnsignedInteger(pyCallbackGetPropertyUInt)
     pyCallbackSetPropertyUInt = fpCallbackSetPropertyUInt(CallbackSetPropertyUInt)
+    pyCallbackSetPropertyReal = fpCallbackSetPropertyReal(CallbackSetPropertyReal)
+    pyCallbackSetPropertyEnumerated = fpCallbackSetPropertyEnum(CallbackSetPropertyEnumerated)
+
     CASBACnetStack.BACnetStack_RegisterCallbackSetPropertyUnsignedInteger(pyCallbackSetPropertyUInt)
     pyCallbackSetPropertyOctetString = fpCallbackSetPropertyOctetString(CallbackSetPropertyOctetString)
     CASBACnetStack.BACnetStack_RegisterCallbackSetPropertyOctetString(pyCallbackSetPropertyOctetString)
@@ -938,12 +999,42 @@ if __name__ == "__main__":
                                                   db["analogInput"]["instance"],
                                                   bacnet_propertyIdentifier["reliability"], True)
 
-    # BinaryInput (BI)
-    print("FYI: Adding BinaryInput. BinaryInput.instance=[" + str(db['binaryInput']['instance']) + "]")
-    if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["binaryInput"],
-                                                db["binaryInput"]["instance"]):
-        print("Error: Failed to add BinaryInput")
+    #Make analogInput subscribable
+    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["analogInput"],
+                                                    db["analogInput"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+
+    #Make analogValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                    db["analogValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+    #Make binaryValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["binaryValue"],
+                                                    db["binaryValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+    #Make multiStateInput subscribable
+    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["multiStateInput"],
+                                                    db["multiStateInput"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+    #Make multiStateValue subscribable
+    CASBACnetStack.BACnetStack_SetPropertyScribable(db["device"]["instance"], bacnet_objectType["multiStateValue"],
+                                                    db["multiStateValue"]["instance"],
+                                                    bacnet_propertyIdentifier["presentValue"], True)
+
+
+
+
+    # AnalogValue (AV)
+    print("FYI: Adding AnalogValue. AnalogValue.instance=[" + str(db['analogValue']['instance']) + "]")
+    if not CASBACnetStack.BACnetStack_AddObject(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                db["analogValue"]["instance"]):
+        print("Error: Failed to add analogValue")
         exit()
+
+    # Enable optional properties
+    CASBACnetStack.BACnetStack_SetPropertyEnabled(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                  db["analogValue"]["instance"],
+                                                  bacnet_propertyIdentifier["reliability"], True)
 
     # MultiStateInput (MSI)
     print("FYI: Adding MultiStateInput. MultiStateInput.instance=[" + str(db['multiStateInput']['instance']) + "]")
@@ -1048,6 +1139,20 @@ if __name__ == "__main__":
                                                           db["networkPort"]["instance"],
                                                           bacnet_propertyIdentifier["fdsubscriptionlifetime"], True):
         print("Error: Failed to set fdSubscriptionLifetime to writable")
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["analogValue"],
+                                                          db["analogValue"]["instance"],
+
+                                                          bacnet_propertyIdentifier["presentValue"], True):
+        print("Error: Failed to set analogValue.presentValue to writable")
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"],
+                                                          bacnet_objectType["multiStateValue"],
+                                                          db["multiStateValue"]["instance"],
+                                                          bacnet_propertyIdentifier["presentValue"], True):
+        print ("Error: Failed to set multiStateValue.presentValue to writable")
+    if not CASBACnetStack.BACnetStack_SetPropertyWritable(db["device"]["instance"], bacnet_objectType["binaryValue"],
+                                                          db["binaryValue"]["instance"],
+                                                          bacnet_propertyIdentifier["presentValue"], True):
+        print("Error: Failed to set binaryValue.presentValue to writable")
 
     # 5. Send I-Am of this device
     # ---------------------------------------------------------------------------
