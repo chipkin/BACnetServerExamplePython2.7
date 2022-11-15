@@ -260,7 +260,16 @@ def CallbackGetPropertyCharString(deviceInstance, objectType, objectInstance, pr
             return True
         # Check for objectname Property
         elif propertyIdentifier == bacnet_propertyIdentifier["objectname"]:
-            if objectType == bacnet_objectType["analogInput"] and objectInstance == db["analogInput"]["instance"]:
+            if objectType == bacnet_objectType["device"] and objectInstance == db["device"]["instance"]:
+                objectName = db["device"]["objectName"]
+                # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
+                b_objectName = objectName.encode("utf-8")
+                for i in range(len(b_objectName)):
+                    value[i] = b_objectName[i]
+                # Define how long the Object name is
+                valueElementCount[0] = len(b_objectName)
+                return True
+            elif objectType == bacnet_objectType["analogInput"] and objectInstance == db["analogInput"]["instance"]:
                 objectName = db["analogInput"]["objectName"]
                 # Convert the Object Name from a string to a format that CAS BACnet Stack can process.
                 b_objectName = objectName.encode("utf-8")
@@ -768,7 +777,6 @@ def CallbackSetPropertyEnumerated(deviceInstance, objectType, objectInstance, pr
         if propertyIdentifier == bacnet_propertyIdentifier["presentValue"]:
             if objectType == bacnet_objectType["binaryValue"] and objectInstance == db["binaryValue"]["instance"]:
                 db["binaryValue"]["presentValue"] = value
-                db["binaryValue"]["changesPending"] = True
                 return True
     return False
 
