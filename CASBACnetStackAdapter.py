@@ -49,10 +49,10 @@ else:
 
 
 # General Functions
-fpCallbackReceiveMessage = ctypes.CFUNCTYPE(ctypes.c_uint16, ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint16,
+fpCallbackReceiveMessage = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint16,
                                             ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint8,
                                             ctypes.POINTER(ctypes.c_uint8), ctypes.POINTER(ctypes.c_uint8))
-fpCallbackSendMessage = ctypes.CFUNCTYPE(ctypes.c_uint16, ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint16,
+fpCallbackSendMessage = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint16,
                                          ctypes.POINTER(ctypes.c_uint8), ctypes.c_uint8, ctypes.c_uint8, ctypes.c_bool)
 fpCallbackGetSystemTime = ctypes.CFUNCTYPE(ctypes.c_uint64)
 fpCallbackSetSystemTime = ctypes.CFUNCTYPE(ctypes.c_bool, ctypes.c_uint32, ctypes.c_uint8, ctypes.c_uint8,

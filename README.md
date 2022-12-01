@@ -1,4 +1,5 @@
 # BACnet Server Example Python 2.7
+
 A basic BACnet IP server example written with Python 2.7 using the [CAS BACnet Stack](https://www.bacnetstack.com/)
 
 - Device: 389001 (Device Rainbow)
@@ -55,10 +56,17 @@ This python script requires the [CAS BACnet Stack](https://www.bacnetstack.com/)
 
 Place the DLL in the root folder. Windows: CASBACnetStack_x64_Release.dll, Linux: libCASBACnetStack_x64_Release.so
 
+To install pip for python 2.7 follow these instructions https://9to5tutorial.com/installing-pip-in-python-2-7
+
 ```bash
-pip install pathlib
-pip install dnspython
-pip install netifaces
+curl https://bootstrap.pypa.io/pip/2.7/get-pip.py -o get-pip.py
+python2 get-pip.py
+```
+
+Install the required packages.
+
+```bash
+pip install pathlib dnspython netifaces
 ```
 
 ## Running

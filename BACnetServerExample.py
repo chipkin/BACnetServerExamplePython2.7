@@ -117,6 +117,8 @@ db = {
 # Globals
 # -----------------------------------------------------------------------------
 udpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udpSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
 lastTimeValueWasUpdated = 0
 
 
@@ -143,7 +145,7 @@ def CallbackReceiveMessage(message, maxMessageLength, receivedConnectionString, 
         # if not data:
         #     print("DEBUG: not data")
         # A message was received.
-        # print ("DEBUG: CallbackReceiveMessage. Message Received", addr, data, len(data) )
+        print ("DEBUG: CallbackReceiveMessage. Message Received", addr, data, len(data) )
 
         # Convert the received address to the CAS BACnet Stack connection string format.
         ip_as_bytes = map(int, addr[0].split("."))
@@ -161,16 +163,16 @@ def CallbackReceiveMessage(message, maxMessageLength, receivedConnectionString, 
 
         # Set the network type
         networkType[0] = ctypes.c_uint8(casbacnetstack_networkType["ip"])
-        return len(data)
+        return int(len(data))
     except socket.timeout:
         # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
-        return 0
+        return int(0)
     except io.BlockingIOError:
         # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
-        return 0
+        return int(0)
     except socket.error:
         # No message, We are not waiting for a incoming message so our socket returns a BlockingIOError. This is normal.
-        return 0
+        return int(0)
 
     # Catch all
     return 0
@@ -180,7 +182,7 @@ def CallbackSendMessage(message, messageLength, connectionString, connectionStri
     # Currently we are only supporting IP
     if networkType != casbacnetstack_networkType["ip"]:
         print("Error: Unsupported network type. networkType:", networkType)
-        return 0
+        return int(0)
 
     # Extract the Connection String from CAS BACnet Stack into an IP address and port.
     udpPort = connectionString[4] * 256 + connectionString[5]
@@ -204,7 +206,7 @@ def CallbackSendMessage(message, messageLength, connectionString, connectionStri
 
     # Send the message
     udpSocket.sendto(data, (ipAddress, udpPort))
-    return messageLength
+    return int(messageLength)
 
 
 def CallbackGetSystemTime():
