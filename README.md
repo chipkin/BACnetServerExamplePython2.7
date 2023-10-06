@@ -54,7 +54,9 @@ FYI: Sending I-AM broadcast
 
 This python script requires the [CAS BACnet Stack](https://www.bacnetstack.com/) DLL that can be purchased from [Chipkin Automation Systems](https://store.chipkin.com).
 
-Place the DLL in the root folder. Windows: CASBACnetStack_x64_Release.dll, Linux: libCASBACnetStack_x64_Release.so
+Place the DLL in the root folder. 
+For Windows: CASBACnetStack_x64_Release.dll and CASBACnetStack_x64_Debug.dll.
+For Linux: libCASBACnetStack_x64_Release.so and CASBACnetStack_x64_Debug.so.
 
 To install pip for python 2.7 follow these instructions https://9to5tutorial.com/installing-pip-in-python-2-7
 
@@ -72,7 +74,7 @@ pip install pathlib dnspython netifaces
 ## Running
 
 ```bash
-python BACnetServerExample.py
+python2 BACnetServerExample.py
 
 ```
 
