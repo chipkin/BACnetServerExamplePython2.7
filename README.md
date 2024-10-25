@@ -1,5 +1,13 @@
 # BACnet Server Example Python 2.7
 
+--------
+
+**!!! This example is no longer maintained.** This example was last updated for CAS BACnet Stack version: 3.31.3.0
+
+Please see the [BACnetServerExamplePython 3.x](https://github.com/chipkin/BACnetServerExamplePython) 
+
+--------
+
 A basic BACnet IP server example written with Python 2.7 using the [CAS BACnet Stack](https://www.bacnetstack.com/)
 
 - Device: 389001 (Device Rainbow)
